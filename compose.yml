@@ -1,0 +1,39 @@
+services:
+
+  wordpress:
+    image: wordpress:${WP_VERSION}
+    restart: always
+    env_file: ./.env
+    environment:
+      VIRTUAL_HOST: ${WP_DOMAIN}
+      VIRTUAL_PORT: ${WP_PORT}
+      LETSENCRYPT_HOST: ${WP_DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETS_ENCRYPT_EMAIL}
+      WORDPRESS_DB_HOST: ${WP_DB_HOST}
+      WORDPRESS_DB_USER: ${WP_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WP_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WP_DB_NAME}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'https://${WP_DOMAIN}');
+        define('WP_SITEURL', 'https://${WP_DOMAIN}');
+        define('UPLOADS', 'wp-content/uploads');
+        define('WP_DEBUG', 'true');
+        define('WP_DEBUG_DISPLAY', 'false');
+        define('WP_DEBUG_LOG', 'true');
+        define('WP_MEMORY_LIMIT', '256M');
+        define( 'WP_MAX_MEMORY_LIMIT', '1024M' );
+    expose:
+      - ${WP_PORT}
+    # ports:
+    #   - 8080:80
+    volumes:
+      - wp_data:/var/www/html
+
+volumes:
+  wp_data:
+
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
