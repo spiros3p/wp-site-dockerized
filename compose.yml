@@ -35,5 +35,5 @@ volumes:
 
 networks:
   default:
-    name: nginx-proxy
+    name: ${SHARED_NETWORK}
     external: true
